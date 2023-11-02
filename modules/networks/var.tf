@@ -1,0 +1,9 @@
+variable "network_name" {}
+variable "gcp_account_id" {}
+variable "private_subnet_name" {}
+variable "private_subnet_cidr" {}
+variable "gcp_region" {}
+variable "private_subnet_secondary_cidr" {}
+variable "public_subnet_name" {}
+variable "public_subnet_cidr" {}
+variable "public_subnet_secondary_cidr" {}

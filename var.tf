@@ -1,49 +1,108 @@
 # Variable for GCP Provider
 
 variable "gcp_project_id" {
-  type        = string
-  default     = ""
+  type = string
 }
 
 variable "gcp_region" {
-  type        = string
-  default     = "us-central1"
+  type = string
 }
 
 
-# Variable for Compute Engine
+# Variable for VPC networks
 
-variable "compute_engine_name" {
+variable "vpc_network_name" {
   type = string
-  default = "test-instance"
+
 }
 
-variable "compute_engine_type" {
+variable "private_subnet_name" {
   type = string
-  default = "n2-standard-2"
 }
 
-variable "compute_engine_zone" {
+variable "private_subnet_cidr" {
   type = string
-  default = "us-central1-a"
+}
+
+variable "private_subnet_secondary_cidr" {
+  type = string
+}
+
+variable "public_subnet_name" {
+  type = string
+}
+
+
+variable "public_subnet_cidr" {
+  type = string
+}
+
+variable "public_subnet_secondary_cidr" {
+  type = string
+}
+
+# Variable for Public Compute Engine
+
+variable "firewall_rule_name" {
+  type = string
+}
+
+variable "firewall_ports" {
+  type = list(string)
+}
+
+variable "firewall_protocol" {
+  type = string
+}
+
+variable "firewall_source_range" {
+  type = list(string)
+}
+
+variable "public_compute_engine_name" {
+  type = string
+}
+
+variable "public_compute_engine_type" {
+  type = string
+}
+
+variable "public_compute_engine_zone" {
+  type = string
 }
 
 variable "compute_engine_network_interface" {
   type = string
-  default = ""
 }
 
 variable "private_keypath" {
-    type = string
-    default = ""
+  type = string
 }
 
 variable "public_keypath" {
-    type = string
-    default = ""
+  type = string
 }
 
-variable "boot_disk_image" {
+variable "public_boot_disk_image" {
   type = string
-  default = "ubuntu-os-cloud/ubuntu-2004-lts"
+}
+
+
+variable "instance_script_path" {
+  type = string
+}
+
+variable "boot_disk_type" {
+  type = string
+
+}
+
+variable "boot_disk_size" {
+  description = "Size of OS disk in GB"
+  type        = number
+
+}
+
+variable "network_tags" {
+  type = list(string)
 }
