@@ -24,15 +24,20 @@ module "compute_instance" {
   private_key_path      = var.private_keypath
   public_key_path       = var.public_keypath
   public_instance_image = var.public_boot_disk_image
+  image_urls            = var.image_urls
   public_subnet         = module.vpc.public_subnet_name
   script_path           = var.instance_script_path
   disk_type             = var.boot_disk_type
   disk_size             = var.boot_disk_size
   network_tags          = var.network_tags
-  ports                 = var.firewall_ports
-  porotocol             = var.firewall_protocol
+  firewall_rules        = var.rules
   source_range          = var.firewall_source_range
   firewall_name         = var.firewall_rule_name
+  target_tags           = var.firewall_target_tags
+  labels                = var.instance_labels
+  preemptible           = var.preemptible
+  automatic_restart     = var.automatic_restart
+
 
   depends_on = [module.vpc]
 }

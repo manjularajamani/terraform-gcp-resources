@@ -1,23 +1,25 @@
 ## Public Compute Engine
-
 resource "google_compute_firewall" "public_firewall_rules" {
-  name    = var.firewall_name
-  network = var.network_interface
-
-  allow {
-    protocol = "icmp"
-  }
-
-  
-  allow {
-    protocol = var.porotocol
-    ports    = var.ports
-  }
-
+  name          = var.firewall_name
+  network       = var.network_interface
   source_ranges = var.source_range
-  target_tags   = ["app"]
+  target_tags   = var.target_tags
+
+  dynamic "allow" {
+    for_each = [for rule in var.firewall_rules : rule if rule.rule_action == "allow"]
+    iterator = rule
+
+    content {
+      protocol = lower(rule.value.protocol)
+      ports    = rule.value.ports != null ? rule.value.ports : []
+    }
+  }
+
 }
 
+data "template_file" "selected_image" {
+  template = lookup(var.image_urls, var.public_instance_image, null)
+}
 
 resource "google_compute_instance" "public_compute_engine" {
   name         = var.public_instance_name
@@ -25,32 +27,32 @@ resource "google_compute_instance" "public_compute_engine" {
   zone         = var.public_instance_zone
   tags         = var.network_tags
 
-  
+
   boot_disk {
-   initialize_params {
-    image = var.public_instance_image
-    type  = var.disk_type
-    size  = var.disk_size
+    initialize_params {
+      image = data.template_file.selected_image.rendered
+      type  = var.disk_type
+      size  = var.disk_size
     }
   }
 
   scheduling {
-    preemptible       = true
-    automatic_restart = false
+    preemptible       = var.preemptible
+    automatic_restart = var.automatic_restart
   }
 
   network_interface {
-    network = var.network_interface
+    network    = var.network_interface
     subnetwork = var.public_subnet
     access_config {
-        # No need to set any properties here
-        # Google Cloud will automatically assign an external IP
+      # No need to set any properties here
+      # Google Cloud will automatically assign an external IP
     }
   }
 
 
   labels = {
-    name = "app"
+    name = var.labels
   }
 
   connection {
@@ -74,7 +76,7 @@ resource "google_compute_instance" "public_compute_engine" {
 
 
   service_account {
-    scopes = ["cloud-platform"]  
+    scopes = ["cloud-platform"]
   }
 
   depends_on = [google_compute_firewall.public_firewall_rules]
